@@ -15,23 +15,32 @@ export default async function AdminDashboard() {
     orderBy: { createdAt: "desc" }
   });
 
+  const statusColors: Record<string, string> = {
+    available: "bg-green-500/20 text-green-300",
+    assigned: "bg-orange-500/20 text-orange-300",
+    completed: "bg-yellow-500/20 text-yellow-300",
+    approved: "bg-cyan-500/20 text-cyan-300",
+    paid: "bg-purple-500/20 text-purple-300",
+    rejected: "bg-red-500/20 text-red-300",
+  };
+
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <div className="flex gap-4">
-          <Link href="/admin/missions/create" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
-            Crear Misión
+    <div className="max-w-lg mx-auto px-4 py-6 space-y-8">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-white">👑 Panel Admin</h1>
+        <div className="flex gap-2">
+          <Link href="/admin/missions/create" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-2 rounded-xl text-xs font-bold hover:from-purple-500 hover:to-pink-500 active:scale-95 transition-all">
+            ✨ Crear
           </Link>
-          <Link href="/admin/review" className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600">
-            Revisar
+          <Link href="/admin/review" className="bg-orange-500/20 text-orange-300 px-3 py-2 rounded-xl text-xs font-bold hover:bg-orange-500/30 active:scale-95 transition-all">
+            📋 Revisar
           </Link>
         </div>
       </div>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-4">Resumen por Hijo</h2>
-        <div className="grid gap-6 md:grid-cols-2">
+      <section>
+        <h2 className="text-lg font-bold mb-3 text-white">👨‍👩‍👧‍👦 Resumen por Hijo</h2>
+        <div className="space-y-3">
           {children.map(child => {
             const totalPaid = child.assignedMissions
               .filter(m => m.status === "paid")
@@ -41,18 +50,20 @@ export default async function AdminDashboard() {
               .reduce((sum, m) => sum + m.reward, 0);
 
             return (
-              <div key={child.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex items-center gap-4">
+              <div key={child.id} className="glass-card p-4 flex items-center gap-4">
                 <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center text-2xl"
-                  style={{ backgroundColor: child.color || "#eee" }}
+                  className="w-14 h-14 rounded-full flex items-center justify-center text-2xl shrink-0 ring-2 ring-purple-500/30"
+                  style={{ backgroundColor: child.color || "#6366f1" }}
                 >
                   {child.avatar}
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold">{child.name}</h3>
-                  <p className="text-gray-600">XP Total: {child.xp}</p>
-                  <p className="text-sm font-semibold text-green-600 mt-2">Pagado: {totalPaid}€</p>
-                  <p className="text-sm font-semibold text-orange-500">Pendiente: {pendingPayment}€</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base font-bold text-white">{child.name}</h3>
+                  <p className="text-xs text-purple-300">⚡ {child.xp} XP</p>
+                  <div className="flex gap-4 mt-1">
+                    <span className="text-xs font-semibold text-green-400">✅ {totalPaid}€</span>
+                    <span className="text-xs font-semibold text-orange-400">⏳ {pendingPayment}€</span>
+                  </div>
                 </div>
               </div>
             );
@@ -61,30 +72,19 @@ export default async function AdminDashboard() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-4">Todas las Misiones</h2>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recompensa</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {missions.map(mission => (
-                <tr key={mission.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{mission.title}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{mission.reward}€ / {mission.xpReward} XP</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                      {mission.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <h2 className="text-lg font-bold mb-3 text-white">📋 Todas las Misiones</h2>
+        <div className="glass-card overflow-hidden">
+          {missions.map(mission => (
+            <div key={mission.id} className="flex justify-between items-center px-4 py-3 border-b border-white/5 last:border-0">
+              <div className="min-w-0 flex-1">
+                <span className="font-medium text-white text-sm block truncate">{mission.title}</span>
+                <span className="text-[10px] text-purple-300/60">{mission.reward}€ / {mission.xpReward} XP</span>
+              </div>
+              <span className={`text-[10px] px-2 py-1 rounded-full font-semibold shrink-0 ml-2 ${statusColors[mission.status] || "bg-white/10 text-white/60"}`}>
+                {mission.status}
+              </span>
+            </div>
+          ))}
         </div>
       </section>
     </div>

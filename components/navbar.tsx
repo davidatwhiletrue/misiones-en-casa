@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { logout } from "../app/actions/auth";
 
 type UserSession = {
@@ -9,50 +10,80 @@ type UserSession = {
 };
 
 export function Navbar({ session, user }: { session: UserSession | null, user: any }) {
+  const pathname = usePathname();
   if (!session || !user) return null;
 
+  const isAdmin = user.role === "admin";
+
+  const navItems = isAdmin
+    ? [
+        { href: "/admin", label: "Inicio", icon: "🏠" },
+        { href: "/admin/missions/create", label: "Crear", icon: "✨" },
+        { href: "/admin/review", label: "Revisar", icon: "📋" },
+      ]
+    : [
+        { href: "/child", label: "Misiones", icon: "⚔️" },
+      ];
+
   return (
-    <nav className="flex items-center justify-between bg-white px-6 py-4 shadow-sm">
-      <div className="flex items-center gap-6">
-        <Link href="/" className="text-xl font-bold text-indigo-600">
-          Misiones
-        </Link>
-        <div className="hidden md:flex gap-4">
-          <Link href={user.role === "admin" ? "/admin" : "/"} className="text-gray-600 hover:text-indigo-600">
-            {user.role === "admin" ? "Resumen" : "Mis Misiones"}
-          </Link>
-          {user.role === "admin" && (
-            <>
-              <Link href="/admin/missions/create" className="text-gray-600 hover:text-indigo-600">
-                Crear Misión
-              </Link>
-              <Link href="/admin/review" className="text-gray-600 hover:text-indigo-600">
-                Revisar
-              </Link>
-            </>
-          )}
-        </div>
-      </div>
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <div
-            className="flex h-10 w-10 items-center justify-center rounded-full text-xl"
-            style={{ backgroundColor: user.color || "#e5e7eb" }}
-          >
-            {user.avatar || "👤"}
-          </div>
-          <span className="hidden font-medium text-gray-700 sm:block">
-            {user.name}
+    <>
+      {/* Top bar */}
+      <nav className="sticky top-0 z-50 flex items-center justify-between px-4 py-3 glass-card rounded-none border-x-0 border-t-0"
+        style={{ background: "rgba(15, 11, 30, 0.85)", backdropFilter: "blur(16px)" }}
+      >
+        <Link href="/" className="flex items-center gap-2">
+          <span className="text-2xl">⚔️</span>
+          <span className="text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Misiones
           </span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div
+              className="flex h-9 w-9 items-center justify-center rounded-full text-lg ring-2 ring-purple-500/50"
+              style={{ backgroundColor: user.color || "#6366f1" }}
+            >
+              {user.avatar || "👤"}
+            </div>
+            <span className="hidden sm:block text-sm font-medium text-purple-200">
+              {user.name}
+            </span>
+          </div>
+          <button
+            onClick={() => logout()}
+            className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-purple-200 hover:bg-white/20 transition-colors"
+          >
+            Salir
+          </button>
         </div>
-        <button
-          onClick={() => logout()}
-          className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200"
-        >
-          Salir
-        </button>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Bottom nav for mobile */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex justify-around items-center py-2 border-t border-white/10"
+        style={{ background: "rgba(15, 11, 30, 0.95)", backdropFilter: "blur(16px)", paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom, 0px))" }}
+      >
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-all ${
+                isActive
+                  ? "text-purple-300 scale-110"
+                  : "text-white/50 hover:text-white/80"
+              }`}
+            >
+              <span className="text-xl">{item.icon}</span>
+              <span className="text-[10px] font-medium">{item.label}</span>
+              {isActive && (
+                <div className="w-1 h-1 rounded-full bg-purple-400 mt-0.5" />
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+    </>
   );
 }
 
