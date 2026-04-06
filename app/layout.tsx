@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Misiones en Casa 🏠⚔️",
+  title: "Misiones en Casa",
   description: "¡Convierte las tareas en misiones épicas y gana recompensas!",
   manifest: undefined,
 };
@@ -44,6 +44,14 @@ export default async function RootLayout({
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
+      <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Misiones en Casa" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
       <body className="min-h-dvh flex flex-col gradient-bg text-white">
         <Navbar session={session as any} user={user} />
         <main className="flex-1 pb-safe">
