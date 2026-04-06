@@ -35,14 +35,12 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
+# Copy full node_modules so Prisma CLI can run for deploy-time migrations
+COPY --from=builder /app/node_modules ./node_modules
+
 # Copy Prisma files needed at runtime
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /app/app/generated ./app/generated
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/@libsql ./node_modules/@libsql
-COPY --from=builder /app/node_modules/libsql ./node_modules/libsql
-RUN mkdir -p /app/node_modules/.bin && ln -sf ../prisma/build/index.js /app/node_modules/.bin/prisma
 
 # Create data directory for SQLite
 RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
