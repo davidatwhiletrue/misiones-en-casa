@@ -13,22 +13,34 @@ function getLevelFromXP(xp: number): { level: number; label: string } {
 }
 
 const rarityColors: Record<string, string> = {
-  common: "bg-gray-100 text-gray-700",
-  special: "bg-blue-100 text-blue-700",
-  epic: "bg-purple-100 text-purple-700",
+  common: "bg-white/10 text-gray-300",
+  special: "bg-blue-500/20 text-blue-300",
+  epic: "bg-purple-500/20 text-purple-300",
+};
+
+const rarityEmoji: Record<string, string> = {
+  common: "⚪",
+  special: "🔵",
+  epic: "🟣",
 };
 
 const difficultyColors: Record<string, string> = {
-  easy: "text-green-600",
-  medium: "text-yellow-600",
-  hard: "text-red-600",
+  easy: "text-green-400",
+  medium: "text-yellow-400",
+  hard: "text-red-400",
+};
+
+const difficultyEmoji: Record<string, string> = {
+  easy: "⭐",
+  medium: "⭐⭐",
+  hard: "⭐⭐⭐",
 };
 
 const statusLabels: Record<string, string> = {
-  assigned: "En curso",
-  completed: "Pendiente revisión",
-  approved: "Aprobada",
-  paid: "Pagada",
+  assigned: "⚔️ En curso",
+  completed: "⏳ Pendiente revisión",
+  approved: "✅ Aprobada",
+  paid: "💰 Pagada",
 };
 
 export default async function ChildDashboard() {
@@ -72,60 +84,70 @@ export default async function ChildDashboard() {
     .reduce((sum, m) => sum + m.reward, 0);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-10">
+    <div className="max-w-lg mx-auto px-4 py-6 space-y-8">
       {/* Hero Stats */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white flex items-center gap-6">
-        <div
-          className="w-20 h-20 rounded-full flex items-center justify-center text-4xl shrink-0"
-          style={{ backgroundColor: child.color || "#6366f1" }}
-        >
-          {child.avatar || "👤"}
+      <div className="glass-card p-5 glow-purple">
+        <div className="flex items-center gap-4 mb-4">
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center text-3xl shrink-0 ring-3 ring-purple-400/50 animate-float"
+            style={{ backgroundColor: child.color || "#6366f1" }}
+          >
+            {child.avatar || "👤"}
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-white">{child.name}</h1>
+            <p className="text-purple-300 text-sm font-medium">🏅 Nivel {level} — {label}</p>
+          </div>
         </div>
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold">{child.name}</h1>
-          <p className="text-indigo-200 text-sm">Nivel {level} — {label}</p>
-          <div className="flex gap-6 mt-3">
-            <div>
-              <span className="text-xl font-bold">{child.xp}</span>
-              <span className="text-indigo-200 text-sm ml-1">XP</span>
-            </div>
-            <div>
-              <span className="text-xl font-bold">{balance.toFixed(2)}€</span>
-              <span className="text-indigo-200 text-sm ml-1">Por cobrar</span>
-            </div>
-            <div>
-              <span className="text-xl font-bold">{totalEarned.toFixed(2)}€</span>
-              <span className="text-indigo-200 text-sm ml-1">Cobrado</span>
-            </div>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-purple-500/15 rounded-xl p-3 text-center">
+            <span className="text-lg font-bold text-purple-300">{child.xp}</span>
+            <p className="text-[10px] text-purple-400/80 font-medium mt-0.5">XP</p>
+          </div>
+          <div className="bg-cyan-500/15 rounded-xl p-3 text-center">
+            <span className="text-lg font-bold text-cyan-300">{balance.toFixed(2)}€</span>
+            <p className="text-[10px] text-cyan-400/80 font-medium mt-0.5">Por cobrar</p>
+          </div>
+          <div className="bg-green-500/15 rounded-xl p-3 text-center">
+            <span className="text-lg font-bold text-green-300">{totalEarned.toFixed(2)}€</span>
+            <p className="text-[10px] text-green-400/80 font-medium mt-0.5">Cobrado</p>
           </div>
         </div>
       </div>
 
       {/* Misiones disponibles */}
       <section>
-        <h2 className="text-xl font-bold mb-4 text-gray-800">🗺️ Misiones disponibles</h2>
+        <h2 className="text-lg font-bold mb-3 text-white flex items-center gap-2">
+          🗺️ <span>Misiones disponibles</span>
+          {availableMissions.length > 0 && (
+            <span className="bg-purple-500/20 text-purple-300 text-xs px-2 py-0.5 rounded-full">{availableMissions.length}</span>
+          )}
+        </h2>
         {availableMissions.length === 0 ? (
-          <p className="text-gray-500 text-sm">No hay misiones disponibles ahora mismo.</p>
+          <div className="glass-card p-6 text-center">
+            <span className="text-3xl block mb-2">😴</span>
+            <p className="text-purple-300/70 text-sm">No hay misiones disponibles ahora mismo.</p>
+          </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-3">
             {availableMissions.map((mission) => (
-              <div key={mission.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-bold text-gray-900">{mission.title}</h3>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${rarityColors[mission.rarity || "common"]}`}>
-                    {mission.rarity}
+              <div key={mission.id} className={`glass-card p-4 rarity-${mission.rarity || "common"}`}>
+                <div className="flex justify-between items-start mb-1.5">
+                  <h3 className="font-bold text-white text-sm">{mission.title}</h3>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${rarityColors[mission.rarity || "common"]}`}>
+                    {rarityEmoji[mission.rarity || "common"]} {mission.rarity}
                   </span>
                 </div>
-                {mission.description && <p className="text-sm text-gray-500 mb-3">{mission.description}</p>}
-                <div className="flex items-center justify-between text-sm mb-3">
+                {mission.description && <p className="text-xs text-purple-200/70 mb-2.5">{mission.description}</p>}
+                <div className="flex items-center justify-between text-xs mb-3">
                   <span className={`font-medium ${difficultyColors[mission.difficulty || "medium"]}`}>
-                    {mission.difficulty}
+                    {difficultyEmoji[mission.difficulty || "medium"]}
                   </span>
-                  <span className="text-gray-700 font-semibold">{mission.reward}€ + {mission.xpReward} XP</span>
+                  <span className="text-cyan-300 font-bold">{mission.reward}€ + {mission.xpReward} XP</span>
                 </div>
                 <form action={acceptMission.bind(null, mission.id)}>
-                  <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
-                    Aceptar misión
+                  <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2.5 rounded-xl text-sm font-bold hover:from-purple-500 hover:to-pink-500 active:scale-[0.97] transition-all">
+                    ⚔️ Aceptar misión
                   </button>
                 </form>
               </div>
@@ -136,21 +158,29 @@ export default async function ChildDashboard() {
 
       {/* Misiones en curso */}
       <section>
-        <h2 className="text-xl font-bold mb-4 text-gray-800">⚔️ Misiones en curso</h2>
+        <h2 className="text-lg font-bold mb-3 text-white flex items-center gap-2">
+          ⚔️ <span>Misiones en curso</span>
+          {activeMissions.length > 0 && (
+            <span className="bg-orange-500/20 text-orange-300 text-xs px-2 py-0.5 rounded-full">{activeMissions.length}</span>
+          )}
+        </h2>
         {activeMissions.length === 0 ? (
-          <p className="text-gray-500 text-sm">No tienes misiones activas. ¡Acepta una!</p>
+          <div className="glass-card p-6 text-center">
+            <span className="text-3xl block mb-2">🎯</span>
+            <p className="text-purple-300/70 text-sm">No tienes misiones activas. ¡Acepta una!</p>
+          </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="space-y-3">
             {activeMissions.map((mission) => (
-              <div key={mission.id} className="bg-white rounded-xl border border-indigo-200 shadow-sm p-4 flex justify-between items-center gap-4">
-                <div>
-                  <h3 className="font-bold text-gray-900">{mission.title}</h3>
-                  {mission.description && <p className="text-sm text-gray-500 mt-0.5">{mission.description}</p>}
-                  <p className="text-sm text-indigo-700 font-semibold mt-1">{mission.reward}€ + {mission.xpReward} XP</p>
+              <div key={mission.id} className="glass-card p-4 border-l-3 border-l-orange-400" style={{ borderLeftWidth: '3px', borderLeftColor: '#fb923c' }}>
+                <div className="mb-2">
+                  <h3 className="font-bold text-white text-sm">{mission.title}</h3>
+                  {mission.description && <p className="text-xs text-purple-200/70 mt-0.5">{mission.description}</p>}
+                  <p className="text-xs text-cyan-300 font-bold mt-1">{mission.reward}€ + {mission.xpReward} XP</p>
                 </div>
                 <form action={completeMission.bind(null, mission.id)}>
-                  <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 whitespace-nowrap transition">
-                    Marcar como completada
+                  <button type="submit" className="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white py-2.5 rounded-xl text-sm font-bold hover:from-green-500 hover:to-emerald-400 active:scale-[0.97] transition-all">
+                    ✅ ¡Completada!
                   </button>
                 </form>
               </div>
@@ -161,21 +191,26 @@ export default async function ChildDashboard() {
 
       {/* Historial */}
       <section>
-        <h2 className="text-xl font-bold mb-4 text-gray-800">📜 Historial</h2>
+        <h2 className="text-lg font-bold mb-3 text-white flex items-center gap-2">
+          📜 <span>Historial</span>
+        </h2>
         {historyMissions.length === 0 ? (
-          <p className="text-gray-500 text-sm">Aún no has completado ninguna misión.</p>
+          <div className="glass-card p-6 text-center">
+            <span className="text-3xl block mb-2">🌟</span>
+            <p className="text-purple-300/70 text-sm">Aún no has completado ninguna misión.</p>
+          </div>
         ) : (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="glass-card overflow-hidden">
             {historyMissions.map((mission) => (
-              <div key={mission.id} className="flex justify-between items-center px-4 py-3 border-b border-gray-100 last:border-0">
+              <div key={mission.id} className="flex justify-between items-center px-4 py-3 border-b border-white/5 last:border-0">
                 <div>
-                  <span className="font-medium text-gray-800">{mission.title}</span>
-                  <p className="text-xs text-gray-500 mt-0.5">{mission.reward}€ + {mission.xpReward} XP</p>
+                  <span className="font-medium text-white text-sm">{mission.title}</span>
+                  <p className="text-[10px] text-purple-300/60 mt-0.5">{mission.reward}€ + {mission.xpReward} XP</p>
                 </div>
-                <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                  mission.status === "paid" ? "bg-green-100 text-green-700" :
-                  mission.status === "approved" ? "bg-blue-100 text-blue-700" :
-                  "bg-orange-100 text-orange-700"
+                <span className={`text-[10px] px-2 py-1 rounded-full font-semibold ${
+                  mission.status === "paid" ? "bg-green-500/20 text-green-300" :
+                  mission.status === "approved" ? "bg-cyan-500/20 text-cyan-300" :
+                  "bg-orange-500/20 text-orange-300"
                 }`}>
                   {statusLabels[mission.status] || mission.status}
                 </span>

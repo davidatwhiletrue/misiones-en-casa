@@ -55,38 +55,38 @@ export function LoginClient({ users }: { users: User[] }) {
 
   if (selectedUser) {
     return (
-      <div className="flex flex-col items-center rounded-2xl bg-white p-8 shadow-lg">
+      <div className="flex flex-col items-center glass-card p-8">
         <button
           onClick={() => setSelectedUserId(null)}
-          className="mb-4 self-start text-sm text-gray-500 hover:text-gray-700"
+          className="mb-4 self-start text-sm text-purple-300 hover:text-white transition-colors"
         >
           ← Volver
         </button>
         <div
-          className="flex h-24 w-24 items-center justify-center rounded-full text-5xl mb-4"
-          style={{ backgroundColor: selectedUser.color || "#e5e7eb" }}
+          className="flex h-24 w-24 items-center justify-center rounded-full text-5xl mb-4 ring-4 ring-purple-500/40"
+          style={{ backgroundColor: selectedUser.color || "#6366f1" }}
         >
           {selectedUser.avatar || "👤"}
         </div>
-        <h2 className="mb-6 text-2xl font-bold">{selectedUser.name}</h2>
+        <h2 className="mb-6 text-2xl font-bold text-white">{selectedUser.name}</h2>
         <form onSubmit={onSubmitPin} className="flex w-full max-w-sm flex-col gap-4">
           <input
             type="password"
-            placeholder="PIN"
+            placeholder="• • • •"
             value={pin}
             onChange={(e) => setPin(e.target.value)}
-            className="rounded-xl border-2 border-gray-200 p-4 text-center text-2xl tracking-[0.5em] focus:border-indigo-500 focus:outline-none"
+            className="rounded-xl border-2 border-purple-500/30 bg-white/10 p-4 text-center text-2xl tracking-[0.5em] text-white placeholder-purple-400/50 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all"
             autoFocus
             maxLength={4}
             disabled={loading}
           />
-          {error && <p className="text-center text-red-500">{error}</p>}
+          {error && <p className="text-center text-pink-400 text-sm">{error}</p>}
           <button
             type="submit"
             disabled={loading || !pin}
-            className="rounded-xl bg-indigo-600 p-4 font-bold text-white transition-colors hover:bg-indigo-700 disabled:opacity-50"
+            className="rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 p-4 font-bold text-white transition-all hover:from-purple-500 hover:to-pink-500 disabled:opacity-40 active:scale-95"
           >
-            {loading ? "Entrando..." : "Entrar"}
+            {loading ? "Entrando... ⏳" : "¡Entrar! 🚀"}
           </button>
         </form>
       </div>
@@ -94,22 +94,22 @@ export function LoginClient({ users }: { users: User[] }) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+    <div className="grid grid-cols-2 gap-4">
       {users.map((user) => (
         <button
           key={user.id}
           onClick={() => handleUserClick(user)}
-          className="group flex flex-col items-center justify-center rounded-2xl bg-white p-6 shadow-md transition-all hover:scale-105 hover:shadow-xl"
+          className="group flex flex-col items-center justify-center glass-card p-5 transition-all hover:scale-[1.04] active:scale-95 hover:bg-white/10"
         >
           <div
-            className="mb-4 flex h-24 w-24 items-center justify-center rounded-full text-5xl transition-transform group-hover:scale-110"
-            style={{ backgroundColor: user.color || "#e5e7eb" }}
+            className="mb-3 flex h-20 w-20 items-center justify-center rounded-full text-4xl transition-transform group-hover:scale-110 ring-3 ring-white/20 group-hover:ring-purple-400/50"
+            style={{ backgroundColor: user.color || "#6366f1" }}
           >
             {user.avatar || "👤"}
           </div>
-          <h3 className="text-xl font-bold text-gray-800">{user.name}</h3>
-          <span className="mt-1 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-500 uppercase">
-            {user.role}
+          <h3 className="text-lg font-bold text-white">{user.name}</h3>
+          <span className="mt-1 rounded-full bg-purple-500/20 px-3 py-0.5 text-[10px] text-purple-300 uppercase font-semibold tracking-wider">
+            {user.role === "admin" ? "👑 Admin" : "🎮 Jugador"}
           </span>
         </button>
       ))}
