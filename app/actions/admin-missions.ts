@@ -52,6 +52,9 @@ export async function approveMission(missionId: string) {
     throw new Error("Unauthorized");
   }
 
+  const mission = await prisma.mission.findUnique({ where: { id: missionId } });
+  if (!mission) throw new Error("Mission not found");
+
   await prisma.mission.update({
     where: { id: missionId },
     data: {
@@ -60,7 +63,16 @@ export async function approveMission(missionId: string) {
     },
   });
 
+  // Award XP to the child when mission is approved
+  if (mission.assignedChildId && mission.xpReward > 0) {
+    await prisma.user.update({
+      where: { id: mission.assignedChildId },
+      data: { xp: { increment: mission.xpReward } },
+    });
+  }
+
   revalidatePath("/");
+  revalidatePath("/child");
   revalidatePath("/admin");
   revalidatePath("/admin/review");
 }
