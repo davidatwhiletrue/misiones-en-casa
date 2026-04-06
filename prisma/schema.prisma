@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  role      String   @default("child") // "admin" | "child"
+  avatar    String?
+  color     String?
+  pin       String?
+  xp        Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Missions assigned to this user
+  assignedMissions Mission[] @relation("AssignedChild")
+  // Missions where this user is the allowed child (null = all)
+  allowedMissions  Mission[] @relation("AllowedChild")
+  // Comments authored by this user
+  comments         Comment[]
+}
+
+model Mission {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  reward      Float     @default(0)
+  xpReward    Int       @default(0)
+  category    String?
+  difficulty  String?   @default("medium") // "easy" | "medium" | "hard"
+  rarity      String?   @default("common") // "common" | "special" | "epic"
+  status      String    @default("available") // "available" | "assigned" | "completed" | "approved" | "paid" | "rejected"
+  repeatable  Boolean   @default(false)
+
+  // The child who picked up this mission
+  assignedChildId String?
+  assignedChild   User?   @relation("AssignedChild", fields: [assignedChildId], references: [id])
+
+  // If set, only this child can accept the mission (null = all children)
+  allowedChildId String?
+  allowedChild   User?   @relation("AllowedChild", fields: [allowedChildId], references: [id])
+
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+  approvedAt  DateTime?
+  paidAt      DateTime?
+
+  comments Comment[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  missionId String
+  mission   Mission  @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  text      String
+  createdAt DateTime @default(now())
+}
