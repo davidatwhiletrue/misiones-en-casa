@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.gitignore
+*.md
+dev.db
+.env*
+.DS_Store
+npm-debug.log*
+test-login.mjs
+verify-e2e.mjs
+
