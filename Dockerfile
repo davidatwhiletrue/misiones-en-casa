@@ -43,15 +43,11 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/app/generated ./app/generated
 
-# Create data directory for SQLite
-RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
-
 USER nextjs
 
 EXPOSE 3030
 
 ENV PORT=3030
 ENV HOSTNAME="0.0.0.0"
-ENV DATABASE_URL="file:/app/data/dev.db"
 
 CMD ["node", "server.js"]
