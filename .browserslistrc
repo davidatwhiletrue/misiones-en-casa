@@ -1,0 +1,13 @@
+# Support iOS Safari 15+
+ios_saf >= 15
+safari >= 15
+
+# Modern browsers
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Edge versions
+
+# Not dead browsers with >0.2% market share
+>0.2%
+not dead
+

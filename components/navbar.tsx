@@ -30,7 +30,7 @@ export function Navbar({ session, user }: { session: UserSession | null, user: a
     <>
       {/* Top bar */}
       <nav className="sticky top-0 z-50 flex items-center justify-between px-4 py-3 glass-card rounded-none border-x-0 border-t-0"
-        style={{ background: "rgba(15, 11, 30, 0.85)", backdropFilter: "blur(16px)" }}
+        style={{ background: "rgba(15, 11, 30, 0.85)", WebkitBackdropFilter: "blur(16px)", backdropFilter: "blur(16px)" }}
       >
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -67,7 +67,7 @@ export function Navbar({ session, user }: { session: UserSession | null, user: a
 
       {/* Bottom nav for mobile */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex justify-around items-center py-2 border-t border-white/10"
-        style={{ background: "rgba(15, 11, 30, 0.95)", backdropFilter: "blur(16px)", paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom, 0px))" }}
+        style={{ background: "rgba(15, 11, 30, 0.95)", WebkitBackdropFilter: "blur(16px)", backdropFilter: "blur(16px)", paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom, 0px))" }}
       >
         {navItems.map((item) => {
           const isActive = pathname === item.href;
