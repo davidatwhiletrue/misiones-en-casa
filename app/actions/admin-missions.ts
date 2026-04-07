@@ -96,6 +96,43 @@ export async function rejectMission(missionId: string) {
   revalidatePath("/admin/review");
 }
 
+export async function updateMission(missionId: string, formData: FormData) {
+  const session = await getSession();
+  if (!session || session.role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const reward = parseFloat((formData.get("reward") as string) || "0");
+  const xpReward = parseInt((formData.get("xpReward") as string) || "0", 10);
+  const category = formData.get("category") as string;
+  const difficulty = (formData.get("difficulty") as string) || "medium";
+  const rarity = (formData.get("rarity") as string) || "common";
+  const repeatable = formData.get("repeatable") === "on";
+  const allowedChildId = formData.get("allowedChildId") as string;
+
+  await prisma.mission.update({
+    where: { id: missionId },
+    data: {
+      title,
+      description,
+      reward,
+      xpReward,
+      category,
+      difficulty,
+      rarity,
+      repeatable,
+      allowedChildId: allowedChildId || null,
+    },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath("/admin/review");
+  redirect("/admin");
+}
+
 export async function payMission(missionId: string) {
   const session = await getSession();
   if (!session || session.role !== "admin") {

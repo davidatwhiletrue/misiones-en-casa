@@ -82,9 +82,17 @@ export default async function AdminDashboard() {
                 <span className="font-medium text-white text-sm block truncate">{mission.title}</span>
                 <span className="text-[10px] text-purple-300/60">{mission.reward}€ / {mission.xpReward} XP</span>
               </div>
-              <span className={`text-[10px] px-2 py-1 rounded-full font-semibold shrink-0 ml-2 ${statusColors[mission.status] || "bg-white/10 text-white/60"}`}>
-                {mission.status}
-              </span>
+              <div className="flex items-center gap-2 shrink-0 ml-2">
+                <Link
+                  href={`/admin/missions/${mission.id}/edit`}
+                  className="text-[10px] px-2 py-1 rounded-full font-semibold bg-white/10 text-purple-300 hover:bg-white/20 hover:text-white transition-all"
+                >
+                  ✏️
+                </Link>
+                <span className={`text-[10px] px-2 py-1 rounded-full font-semibold ${statusColors[mission.status] || "bg-white/10 text-white/60"}`}>
+                  {mission.status}
+                </span>
+              </div>
             </div>
           ))}
         </div>
