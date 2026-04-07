@@ -40,7 +40,7 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Misiones en Casa" />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className="min-h-screen min-h-dvh flex flex-col gradient-bg text-white">
+      <body className="min-h-dvh flex flex-col gradient-bg text-white">
         <Navbar session={session as any} user={user} />
         <main className="flex-1 pb-safe">
           {children}

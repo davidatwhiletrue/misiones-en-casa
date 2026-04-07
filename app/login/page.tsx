@@ -20,7 +20,7 @@ export default async function LoginPage() {
   });
 
   return (
-    <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center p-4 gradient-bg">
+    <div className="flex min-h-dvh flex-col items-center justify-center p-4 gradient-bg">
       <div className="w-full max-w-md mx-auto">
         {/* Hero */}
         <div className="text-center mb-10 animate-float">
