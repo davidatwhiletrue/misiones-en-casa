@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logout } from "../app/actions/auth";
+import Image from "next/image";
 
 type UserSession = {
   userId: string;
@@ -32,7 +33,13 @@ export function Navbar({ session, user }: { session: UserSession | null, user: a
         style={{ background: "rgba(15, 11, 30, 0.85)", backdropFilter: "blur(16px)" }}
       >
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl">⚔️</span>
+          <Image
+            src="/favicon-96x96.png"
+            alt="Misiones en Casa"
+            width={28}
+            height={28}
+            className="rounded-lg"
+          />
           <span className="text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
             Misiones
           </span>

@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/db";
 import { LoginClient } from "./login-client";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,15 @@ export default async function LoginPage() {
       <div className="w-full max-w-md mx-auto">
         {/* Hero */}
         <div className="text-center mb-10 animate-float">
-          <span className="text-6xl block mb-4">⚔️🏠</span>
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/apple-touch-icon.png"
+              alt="Misiones en Casa"
+              width={96}
+              height={96}
+              className="rounded-2xl shadow-lg"
+            />
+          </div>
           <h1 className="text-4xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
             Misiones en Casa
           </h1>
