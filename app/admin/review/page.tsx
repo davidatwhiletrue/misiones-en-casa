@@ -1,5 +1,6 @@
 import { prisma } from "../../../lib/db";
 import { approveMission, rejectMission, payMission } from "../../actions/admin-missions";
+import { ApproveStreakButton, PayStreakButton } from "../../../components/streak-action-buttons";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,19 @@ export default async function ReviewMissionsPage() {
   const pendingPayment = await prisma.mission.findMany({
     where: { status: "approved" },
     include: { assignedChild: true },
+    orderBy: { approvedAt: "asc" },
+  });
+
+  // Streak missions pending review/payment
+  const streakPendingReview = await prisma.streakProgress.findMany({
+    where: { status: "completed" },
+    include: { mission: true, child: true },
+    orderBy: { completedAt: "asc" },
+  });
+
+  const streakPendingPayment = await prisma.streakProgress.findMany({
+    where: { status: "approved" },
+    include: { mission: true, child: true },
     orderBy: { approvedAt: "asc" },
   });
 
@@ -98,6 +112,58 @@ export default async function ReviewMissionsPage() {
           </div>
         )}
       </section>
+
+      {/* Streak: Pending Review */}
+      {streakPendingReview.length > 0 && (
+        <section>
+          <h2 className="text-lg font-bold mb-3 text-white flex items-center gap-2">
+            🔥 <span>Rachas Completadas</span>
+            <span className="bg-orange-500/20 text-orange-300 text-xs px-2 py-0.5 rounded-full">{streakPendingReview.length}</span>
+          </h2>
+          <div className="space-y-3">
+            {streakPendingReview.map((sp) => (
+              <div key={sp.id} className="glass-card p-4" style={{ borderLeftWidth: '3px', borderLeftColor: '#f97316' }}>
+                <div className="mb-3">
+                  <h3 className="font-bold text-white text-sm">🔥 {sp.mission.title}</h3>
+                  <p className="text-xs text-purple-200/70 mt-0.5">
+                    Completada por: <span className="text-cyan-300 font-medium">{sp.child.name}</span>
+                  </p>
+                  <p className="text-xs text-purple-300/60 mt-0.5">
+                    {sp.mission.streakTarget} días · {sp.mission.reward}€ · {sp.mission.xpReward} XP
+                  </p>
+                </div>
+                <ApproveStreakButton progressId={sp.id} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Streak: Pending Payment */}
+      {streakPendingPayment.length > 0 && (
+        <section>
+          <h2 className="text-lg font-bold mb-3 text-white flex items-center gap-2">
+            🔥💰 <span>Rachas por Pagar</span>
+            <span className="bg-green-500/20 text-green-300 text-xs px-2 py-0.5 rounded-full">{streakPendingPayment.length}</span>
+          </h2>
+          <div className="space-y-3">
+            {streakPendingPayment.map((sp) => (
+              <div key={sp.id} className="glass-card p-4" style={{ borderLeftWidth: '3px', borderLeftColor: '#22c55e' }}>
+                <div className="mb-3">
+                  <h3 className="font-bold text-white text-sm">🔥 {sp.mission.title}</h3>
+                  <p className="text-xs text-purple-200/70 mt-0.5">
+                    Para: <span className="text-cyan-300 font-medium">{sp.child.name}</span>
+                  </p>
+                  <p className="text-xs text-green-400 font-bold mt-0.5">
+                    A pagar: {sp.mission.reward}€
+                  </p>
+                </div>
+                <PayStreakButton progressId={sp.id} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

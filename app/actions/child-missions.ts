@@ -34,6 +34,32 @@ export async function acceptMission(missionId: string) {
   revalidatePath("/admin");
 }
 
+export async function joinStreakMission(missionId: string) {
+  const session = await getSession();
+  if (!session || session.role !== "child") {
+    throw new Error("Unauthorized");
+  }
+
+  const childId = session.userId as string;
+
+  const mission = await prisma.mission.findUnique({ where: { id: missionId } });
+  if (!mission || mission.type !== "streak") throw new Error("Not a streak mission");
+
+  // Check if already participating
+  const existing = await prisma.streakProgress.findUnique({
+    where: { missionId_childId: { missionId, childId } },
+  });
+  if (existing) return; // already joined
+
+  await prisma.streakProgress.create({
+    data: { missionId, childId, currentStreak: 0, status: "in_progress" },
+  });
+
+  revalidatePath("/child");
+  revalidatePath("/admin");
+  revalidatePath("/admin/streaks");
+}
+
 export async function completeMission(missionId: string) {
   const session = await getSession();
   if (!session || session.role !== "child") {

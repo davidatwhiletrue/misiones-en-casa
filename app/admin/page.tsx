@@ -35,6 +35,9 @@ export default async function AdminDashboard() {
           <Link href="/admin/missions/create" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-2 rounded-xl text-xs font-bold hover:from-purple-500 hover:to-pink-500 active:scale-95 transition-all">
             ✨ Crear
           </Link>
+          <Link href="/admin/streaks" className="bg-orange-500/20 text-orange-300 px-3 py-2 rounded-xl text-xs font-bold hover:bg-orange-500/30 active:scale-95 transition-all">
+            🔥 Rachas
+          </Link>
           <Link href="/admin/review" className="bg-orange-500/20 text-orange-300 px-3 py-2 rounded-xl text-xs font-bold hover:bg-orange-500/30 active:scale-95 transition-all">
             📋 Revisar
           </Link>

@@ -1,6 +1,7 @@
 import { prisma } from "../../../../lib/db";
 import { createMission } from "../../../actions/admin-missions";
 import Link from "next/link";
+import MissionTypeFields from "../../../../components/mission-type-fields";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,8 @@ export default async function CreateMissionPage() {
           <label htmlFor="description" className={labelClass}>Descripción</label>
           <textarea id="description" name="description" rows={3} required placeholder="¿Qué hay que hacer?" className={inputClass} />
         </div>
+
+        <MissionTypeFields inputClass={inputClass} labelClass={labelClass} />
 
         <div className="grid grid-cols-2 gap-3">
           <div>

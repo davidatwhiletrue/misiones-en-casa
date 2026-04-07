@@ -2,6 +2,7 @@ import { prisma } from "../../../../../lib/db";
 import { updateMission } from "../../../../actions/admin-missions";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import MissionTypeFields from "../../../../../components/mission-type-fields";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,13 @@ export default async function EditMissionPage({ params }: { params: Promise<{ id
           <label htmlFor="description" className={labelClass}>Descripción</label>
           <textarea id="description" name="description" rows={3} required defaultValue={mission.description || ""} className={inputClass} />
         </div>
+
+        <MissionTypeFields
+          inputClass={inputClass}
+          labelClass={labelClass}
+          defaultType={mission.type}
+          defaultStreakTarget={mission.streakTarget || 7}
+        />
 
         <div className="grid grid-cols-2 gap-3">
           <div>

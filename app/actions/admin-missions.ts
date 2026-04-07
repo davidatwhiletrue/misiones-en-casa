@@ -19,12 +19,11 @@ export async function createMission(formData: FormData) {
   const difficulty = (formData.get("difficulty") as string) || "medium";
   const rarity = (formData.get("rarity") as string) || "common";
   const repeatable = formData.get("repeatable") === "on";
-  
   const allowedChildId = formData.get("allowedChildId") as string;
-  
-  // If specific child is selected and it's not repeatable, we might just assign it right away?
-  // Idea says: "asignación (todos o hijo específico)". In db schema, `allowedChildId` sets who can take it.
-  
+  const type = (formData.get("type") as string) || "standard";
+  const streakTargetRaw = formData.get("streakTarget") as string;
+  const streakTarget = type === "streak" ? parseInt(streakTargetRaw || "7", 10) : null;
+
   await prisma.mission.create({
     data: {
       title,
@@ -36,6 +35,8 @@ export async function createMission(formData: FormData) {
       rarity,
       repeatable,
       allowedChildId: allowedChildId || null,
+      type,
+      streakTarget,
       status: "available",
     },
   });
@@ -111,6 +112,9 @@ export async function updateMission(missionId: string, formData: FormData) {
   const rarity = (formData.get("rarity") as string) || "common";
   const repeatable = formData.get("repeatable") === "on";
   const allowedChildId = formData.get("allowedChildId") as string;
+  const type = (formData.get("type") as string) || "standard";
+  const streakTargetRaw = formData.get("streakTarget") as string;
+  const streakTarget = type === "streak" ? parseInt(streakTargetRaw || "7", 10) : null;
 
   await prisma.mission.update({
     where: { id: missionId },
@@ -124,6 +128,8 @@ export async function updateMission(missionId: string, formData: FormData) {
       rarity,
       repeatable,
       allowedChildId: allowedChildId || null,
+      type,
+      streakTarget,
     },
   });
 

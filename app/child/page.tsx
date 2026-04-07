@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/db";
 import { getSession } from "../../lib/auth";
 import { redirect } from "next/navigation";
-import { acceptMission, completeMission } from "../actions/child-missions";
+import { acceptMission, completeMission, joinStreakMission } from "../actions/child-missions";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +59,19 @@ export default async function ChildDashboard() {
   const availableMissions = await prisma.mission.findMany({
     where: {
       status: "available",
+      type: "standard",
       OR: [{ allowedChildId: null }, { allowedChildId: childId }],
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  // Streak missions with this child's progress
+  const streakMissions = await prisma.mission.findMany({
+    where: { type: "streak", status: "available" },
+    include: {
+      streakProgress: {
+        where: { childId },
+      },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -157,6 +169,63 @@ export default async function ChildDashboard() {
           </div>
         )}
       </section>
+
+      {/* Misiones de Racha */}
+      {streakMissions.length > 0 && (
+        <section>
+          <h2 className="text-lg font-bold mb-3 text-white flex items-center gap-2">
+            🔥 <span>Rachas</span>
+            <span className="bg-orange-500/20 text-orange-300 text-xs px-2 py-0.5 rounded-full">{streakMissions.length}</span>
+          </h2>
+          <div className="space-y-3">
+            {streakMissions.map((mission) => {
+              const progress = mission.streakProgress[0];
+              const streak = progress?.currentStreak || 0;
+              const target = mission.streakTarget || 7;
+              const pct = Math.min(100, Math.round((streak / target) * 100));
+              const joined = !!progress;
+              const streakStatus = progress?.status || "not_joined";
+
+              return (
+                <div key={mission.id} className="glass-card p-4 border-l-3" style={{ borderLeftWidth: '3px', borderLeftColor: '#f97316' }}>
+                  <div className="flex justify-between items-start mb-1.5">
+                    <h3 className="font-bold text-white text-sm">{mission.title}</h3>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-orange-500/20 text-orange-300">
+                      🔥 Racha
+                    </span>
+                  </div>
+                  {mission.description && <p className="text-xs text-purple-200/70 mb-2">{mission.description}</p>}
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="text-orange-300 font-bold">🔥 {streak}/{target} días</span>
+                    <span className="text-cyan-300 font-bold">{mission.reward}€ + {mission.xpReward} XP</span>
+                  </div>
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden mb-3">
+                    <div
+                      className="h-full bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full transition-all"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  {!joined ? (
+                    <form action={joinStreakMission.bind(null, mission.id)}>
+                      <button type="submit" className="w-full bg-gradient-to-r from-orange-600 to-yellow-500 text-white py-2.5 rounded-xl text-sm font-bold hover:from-orange-500 hover:to-yellow-400 active:scale-[0.97] transition-all">
+                        🔥 Unirme a la racha
+                      </button>
+                    </form>
+                  ) : streakStatus === "completed" ? (
+                    <div className="text-center text-sm font-bold text-yellow-300 bg-yellow-500/10 rounded-xl py-2">⏳ Pendiente de aprobación</div>
+                  ) : streakStatus === "approved" ? (
+                    <div className="text-center text-sm font-bold text-cyan-300 bg-cyan-500/10 rounded-xl py-2">✅ ¡Aprobada! Pendiente de pago</div>
+                  ) : streakStatus === "paid" ? (
+                    <div className="text-center text-sm font-bold text-green-300 bg-green-500/10 rounded-xl py-2">💰 ¡Pagada! Puedes repetirla</div>
+                  ) : (
+                    <div className="text-center text-xs text-purple-300/60 py-1">El admin marca tu progreso diario</div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Misiones en curso */}
       <section>

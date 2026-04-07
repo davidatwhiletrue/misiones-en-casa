@@ -27,6 +27,8 @@ model User {
   allowedMissions  Mission[] @relation("AllowedChild")
   // Comments authored by this user
   comments         Comment[]
+  // Streak progress entries for this user
+  streakProgress   StreakProgress[]
 }
 
 model Mission {
@@ -49,6 +51,10 @@ model Mission {
   allowedChildId String?
   allowedChild   User?   @relation("AllowedChild", fields: [allowedChildId], references: [id])
 
+  // Mission type: "standard" or "streak"
+  type        String    @default("standard")
+  streakTarget Int?     // Number of consecutive days required for streak missions
+
   dueDate     DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -56,7 +62,25 @@ model Mission {
   approvedAt  DateTime?
   paidAt      DateTime?
 
-  comments Comment[]
+  comments       Comment[]
+  streakProgress StreakProgress[]
+}
+
+model StreakProgress {
+  id              String    @id @default(cuid())
+  missionId       String
+  mission         Mission   @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  childId         String
+  child           User      @relation(fields: [childId], references: [id])
+  currentStreak   Int       @default(0)
+  lastCheckInDate DateTime?
+  status          String    @default("in_progress") // "in_progress" | "completed" | "approved" | "paid"
+  completedAt     DateTime?
+  approvedAt      DateTime?
+  paidAt          DateTime?
+  createdAt       DateTime  @default(now())
+
+  @@unique([missionId, childId])
 }
 
 model Comment {
