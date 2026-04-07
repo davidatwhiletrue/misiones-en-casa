@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/db";
 import Link from "next/link";
+import DeleteMissionButton from "../../components/delete-mission-button";
 
 export const dynamic = "force-dynamic";
 
@@ -89,6 +90,7 @@ export default async function AdminDashboard() {
                 >
                   ✏️
                 </Link>
+                <DeleteMissionButton missionId={mission.id} />
                 <span className={`text-[10px] px-2 py-1 rounded-full font-semibold ${statusColors[mission.status] || "bg-white/10 text-white/60"}`}>
                   {mission.status}
                 </span>

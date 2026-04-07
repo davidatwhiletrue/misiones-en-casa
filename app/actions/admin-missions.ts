@@ -133,6 +133,21 @@ export async function updateMission(missionId: string, formData: FormData) {
   redirect("/admin");
 }
 
+export async function deleteMission(missionId: string) {
+  const session = await getSession();
+  if (!session || session.role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+
+  await prisma.mission.delete({
+    where: { id: missionId },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath("/admin/review");
+}
+
 export async function payMission(missionId: string) {
   const session = await getSession();
   if (!session || session.role !== "admin") {
