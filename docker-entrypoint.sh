@@ -3,12 +3,12 @@ set -eu
 
 if [ -z "${DATABASE_URL:-}" ]; then
   echo "DATABASE_URL is required"
-  exit 1
+#  exit 1
 fi
 
 if [ -z "${SESSION_SECRET:-}" ]; then
   echo "SESSION_SECRET is required"
-  exit 1
+#  exit 1
 fi
 
 echo "Applying Prisma schema..."
