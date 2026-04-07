@@ -1,0 +1,64 @@
+{
+  "scripts": [
+    {
+      "name": "db:generate",
+      "command": "npm run db:generate",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "predev",
+      "command": "npm run predev",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "prebuild",
+      "command": "npm run prebuild",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "postinstall",
+      "command": "npm run postinstall",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "dev",
+      "command": "npm run dev",
+      "mode": "service",
+      "category": "dev"
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "start",
+      "command": "npm run start",
+      "mode": "service",
+      "category": "dev"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "mode": "command",
+      "category": "lint"
+    },
+    {
+      "name": "db:seed",
+      "command": "npm run db:seed",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "db:studio",
+      "command": "npm run db:studio",
+      "mode": "command",
+      "category": "other"
+    }
+  ]
+}

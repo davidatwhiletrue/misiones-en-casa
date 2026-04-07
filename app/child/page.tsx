@@ -3,6 +3,8 @@ import { getSession } from "../../lib/auth";
 import { redirect } from "next/navigation";
 import { acceptMission, completeMission } from "../actions/child-missions";
 
+export const dynamic = "force-dynamic";
+
 function getLevelFromXP(xp: number): { level: number; label: string } {
   if (xp < 100) return { level: 1, label: "Novato" };
   if (xp < 300) return { level: 2, label: "Aprendiz" };
@@ -222,4 +224,3 @@ export default async function ChildDashboard() {
     </div>
   );
 }
-

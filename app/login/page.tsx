@@ -1,6 +1,8 @@
 import { prisma } from "../../lib/db";
 import { LoginClient } from "./login-client";
 
+export const dynamic = "force-dynamic";
+
 export default async function LoginPage() {
   const users = await prisma.user.findMany({
     select: {
@@ -34,4 +36,3 @@ export default async function LoginPage() {
     </div>
   );
 }
-

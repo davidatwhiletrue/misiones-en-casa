@@ -1,6 +1,8 @@
 import { prisma } from "../../lib/db";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
   const children = await prisma.user.findMany({
     where: { role: "child" },
@@ -90,4 +92,3 @@ export default async function AdminDashboard() {
     </div>
   );
 }
-

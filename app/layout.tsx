@@ -1,19 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { getSession } from "../lib/auth";
 import { prisma } from "../lib/db";
 import { Navbar } from "../components/navbar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Misiones en Casa",
@@ -40,10 +31,7 @@ export default async function RootLayout({
     : null;
 
   return (
-    <html
-      lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
+    <html lang="es" className="antialiased">
       <head>
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

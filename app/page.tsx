@@ -2,6 +2,8 @@ import { getSession } from "../lib/auth";
 import { prisma } from "../lib/db";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const session = await getSession();
   const user = session?.userId

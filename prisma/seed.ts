@@ -1,7 +1,13 @@
 import "dotenv/config";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "../app/generated/prisma/client";
 
-const prisma = new PrismaClient();
+const databaseUrl =
+  process.env.DATABASE_URL ?? "mysql://root:password@127.0.0.1:3306/misiones_en_casa";
+
+const adapter = new PrismaMariaDb(databaseUrl);
+
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -156,4 +162,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-

@@ -1,6 +1,8 @@
 import { prisma } from "../../../lib/db";
 import { approveMission, rejectMission, payMission } from "../../actions/admin-missions";
 
+export const dynamic = "force-dynamic";
+
 export default async function ReviewMissionsPage() {
   const pendingReview = await prisma.mission.findMany({
     where: { status: "completed" },
