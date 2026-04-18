@@ -89,13 +89,28 @@ export default async function ChildDashboard() {
     orderBy: { updatedAt: "desc" },
   });
 
+  const historyStreakProgress = await prisma.streakProgress.findMany({
+    where: {
+      childId: childId,
+      status: { in: ["completed", "approved", "paid"] },
+    },
+    include: { mission: true },
+    orderBy: { createdAt: "desc" },
+  });
+
   const { level, label } = getLevelFromXP(child.xp);
   const balance = historyMissions
     .filter((m) => m.status === "approved")
-    .reduce((sum, m) => sum + m.reward, 0);
+    .reduce((sum, m) => sum + m.reward, 0) +
+    historyStreakProgress
+      .filter((sp) => sp.status === "approved")
+      .reduce((sum, sp) => sum + sp.mission.reward, 0);
   const totalEarned = historyMissions
     .filter((m) => m.status === "paid")
-    .reduce((sum, m) => sum + m.reward, 0);
+    .reduce((sum, m) => sum + m.reward, 0) +
+    historyStreakProgress
+      .filter((sp) => sp.status === "paid")
+      .reduce((sum, sp) => sum + sp.mission.reward, 0);
 
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-8">

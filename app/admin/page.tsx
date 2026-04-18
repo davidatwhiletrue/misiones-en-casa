@@ -10,6 +10,10 @@ export default async function AdminDashboard() {
     include: {
       assignedMissions: {
         where: { status: { in: ["approved", "paid"] } }
+      },
+      streakProgress: {
+        where: { status: { in: ["approved", "paid"] } },
+        include: { mission: true }
       }
     }
   });
@@ -50,10 +54,17 @@ export default async function AdminDashboard() {
           {children.map(child => {
             const totalPaid = child.assignedMissions
               .filter(m => m.status === "paid")
-              .reduce((sum, m) => sum + m.reward, 0);
+              .reduce((sum, m) => sum + m.reward, 0) +
+              child.streakProgress
+              .filter(sp => sp.status === "paid")
+              .reduce((sum, sp) => sum + sp.mission.reward, 0);
+
             const pendingPayment = child.assignedMissions
               .filter(m => m.status === "approved")
-              .reduce((sum, m) => sum + m.reward, 0);
+              .reduce((sum, m) => sum + m.reward, 0) +
+              child.streakProgress
+              .filter(sp => sp.status === "approved")
+              .reduce((sum, sp) => sum + sp.mission.reward, 0);
 
             return (
               <div key={child.id} className="glass-card p-4 flex items-center gap-4">
