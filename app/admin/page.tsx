@@ -88,31 +88,40 @@ export default async function AdminDashboard() {
         </div>
       </section>
 
-      <section>
-        <h2 className="text-lg font-bold mb-3 text-white">📋 Todas las Misiones</h2>
-        <div className="glass-card overflow-hidden">
-          {missions.map(mission => (
-            <div key={mission.id} className="flex justify-between items-center px-4 py-3 border-b border-white/5 last:border-0">
-              <div className="min-w-0 flex-1">
-                <span className="font-medium text-white text-sm block truncate">{mission.title}</span>
-                <span className="text-[10px] text-purple-300/60">{mission.reward}€ / {mission.xpReward} XP</span>
-              </div>
-              <div className="flex items-center gap-2 shrink-0 ml-2">
-                <Link
-                  href={`/admin/missions/${mission.id}/edit`}
-                  className="text-[10px] px-2 py-1 rounded-full font-semibold bg-white/10 text-purple-300 hover:bg-white/20 hover:text-white transition-all"
-                >
-                  ✏️
-                </Link>
-                <DeleteMissionButton missionId={mission.id} />
-                <span className={`text-[10px] px-2 py-1 rounded-full font-semibold ${statusColors[mission.status] || "bg-white/10 text-white/60"}`}>
-                  {mission.status}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {[
+        { title: "🟢 Misiones disponibles", data: missions.filter(m => m.status === "available") },
+        { title: "✅ Misiones completadas", data: missions.filter(m => m.status !== "available") },
+      ].map((section, idx) => (
+        <section key={idx}>
+          <h2 className="text-lg font-bold mb-3 text-white">{section.title}</h2>
+          <div className="glass-card overflow-hidden">
+            {section.data.length === 0 ? (
+              <div className="p-4 text-center text-sm text-white/50">No hay misiones</div>
+            ) : (
+              section.data.map(mission => (
+                <div key={mission.id} className="flex justify-between items-center px-4 py-3 border-b border-white/5 last:border-0">
+                  <div className="min-w-0 flex-1">
+                    <span className="font-medium text-white text-sm block truncate">{mission.title}</span>
+                    <span className="text-[10px] text-purple-300/60">{mission.reward}€ / {mission.xpReward} XP</span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0 ml-2">
+                    <Link
+                      href={`/admin/missions/${mission.id}/edit`}
+                      className="text-[10px] px-2 py-1 rounded-full font-semibold bg-white/10 text-purple-300 hover:bg-white/20 hover:text-white transition-all"
+                    >
+                      ✏️
+                    </Link>
+                    <DeleteMissionButton missionId={mission.id} />
+                    <span className={`text-[10px] px-2 py-1 rounded-full font-semibold ${statusColors[mission.status] || "bg-white/10 text-white/60"}`}>
+                      {mission.status}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }
